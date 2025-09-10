@@ -32,7 +32,8 @@ The following **optional** features are implemented:
 ## Video Walkthrough
 Here's a walkthrough of implemented user stories:
 
-<img src='docs/demo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='2025-09-10 at 1.39.40 - Green Toad.gif
+' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
