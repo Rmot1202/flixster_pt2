@@ -34,7 +34,9 @@ Here's a walkthrough of implemented user stories:
 
 <img src='2025-09-10 at 1.39.40 - Green Toad.gif' width='' alt='Video Walkthrough' />
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
+GIF created with ...  
+[Kap](https://getkap.co/) for macOS
+
 
 ---
 
