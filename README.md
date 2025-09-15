@@ -1,66 +1,58 @@
-# Lab 3 - *Parks Explorer*
+# Android Project 3 - *Name of App Here*
 
-**Name of App:** Parks Explorer  
-**Course:** AND102 | Intermediate Android Development (Fall 2025 @ Virginia State University)  
-**Cohort Member:** Raven Mott (Personal Member ID#: 117574)  
-**Date:** 2025-09-10  
+Submitted by: **Your Name Here**
 
----
+**Name of your app** is a movie browsing app that allows users to browse movies currently playing in theaters.
 
-## App Description
-Parks Explorer is a simple Android app that displays a list of U.S. National Parks using live data from the **National Parks Service API**.  
-The app demonstrates key Android development skills including **networking with AsyncHttpClient**, **JSON parsing with Gson**, **RecyclerView binding**, and **image loading with Glide**.  
+Time spent: **3** hours spent in total
 
----
+## Required Features
 
-## Required User Stories
 The following **required** functionality is completed:
 
-- [x] User can request live data from the National Parks API  
-- [x] Data is parsed into Kotlin models (name, description, location, image)  
-- [x] Parks are displayed in a scrolling list with RecyclerView  
-- [x] Each item shows the park’s name, location, and description  
-- [x] Park images are fetched from URLs and displayed with Glide  
+- [X] **Make a request to [The Movie Database API's `now_playing`](https://developers.themoviedb.org/3/movies/get-now-playing) endpoint to get a list of current movies**
+- [X] **Parse through JSON data and implement a RecyclerView to display all movies**
+- [X] **Use Glide to load and display movie poster images**
 
 The following **optional** features are implemented:
 
-- [ ] N/A  
+- [X] Improve and customize the user interface through styling and coloring
+- [X] Implement orientation responsivity
+  - App should neatly arrange data in both landscape and portrait mode
+- [ ] Implement Glide to display placeholder graphics during loading
+  - Note: this feature is difficult to capture in a GIF without throttling internet speeds.  Instead, include an additional screencap of your Glide code implementing the feature.  (<10 lines of code)
 
----
+The following **additional** features are implemented:
 
+- [ ] List anything else that you can get done to improve the app functionality!
 
 ## Video Walkthrough
+
 Here's a walkthrough of implemented user stories:
 
-<img src='2025-09-10 at 1.39.40 - Green Toad.gif' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
+<!-- Replace this with whatever GIF tool you used! -->
 GIF created with ...  
 [Kap](https://getkap.co/) for macOS
 
 
----
-
 ## Notes
-- Learned how to integrate **third-party APIs** into an Android app  
-- Practiced parsing complex JSON structures with Gson  
-- Applied **ConstraintLayout** for building custom list item layouts  
-- Used **Glide** for efficient image downloading and caching  
 
----
+Describe any challenges encountered while building the app.
 
 ## License
-``
-Copyright 2025 Raven Mott
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+    Copyright [2025] [Raven Mott]
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
