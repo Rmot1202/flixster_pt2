@@ -9,10 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.codepath.flixster.R.id
 
-/**
- * [RecyclerView.Adapter] that can display a [NationalPark] and makes a call to the
- * specified [OnListFragmentInteractionListener].
- */
+
 class flixsterRecyclerViewAdapter(
     private val parks: List<Movie>,
     private val mListener: OnListFragmentInteractionListener?
@@ -45,11 +42,11 @@ class flixsterRecyclerViewAdapter(
         val park = parks[position]
 
         // TODO: Step 4b - Bind the park data to the views
-        holder.mParkName.text = park.name
-        holder.mParkDescription.text = park.description
+        holder.mParkName.text = park.title
+        holder.mParkDescription.text = park.overview
 
         // TODO: Step 4c - Use Glide to load the first image
-        val imageUrl = park.imageUrl
+        val imageUrl = park.posterPath
         val fullUrl = "https://image.tmdb.org/t/p/w500/$imageUrl"
         Glide.with(holder.mView)
             .load(fullUrl)

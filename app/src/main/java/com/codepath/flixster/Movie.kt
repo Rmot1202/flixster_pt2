@@ -3,35 +3,35 @@ package com.codepath.flixster
 import com.google.gson.annotations.SerializedName
 
 /**
- * The Model for storing a single park from the National Parks API.
- *
- * SerializedName tags MUST match the JSON response for the
- * object to correctly parse with the gson library.
+ * Model for a single movie from the TMDB API.
  */
 class Movie {
 
-    // Name field
     @JvmField
-    @SerializedName("fullName")
-    var name: String? = null
+    @SerializedName("title")
+    var title: String? = null
 
-    // Description field
     @JvmField
-    @SerializedName("description")
-    var description: String? = null
+    @SerializedName("overview")
+    var overview: String? = null
 
-    //TODO parkImageUrl
+    // Partial paths from TMDB (e.g., "/ct6HkcvSGDC5yT6eQKdBn4HWcNC.jpg")
     @JvmField
-    @SerializedName("images")
-    var images: List<Image>? = null
+    @SerializedName("poster_path")
+    var posterPath: String? = null
 
-    // Convenience property to access the first image’s URL
-    val imageUrl: String? get() = images?.firstOrNull()?.url
+    @JvmField
+    @SerializedName("backdrop_path")
+    var backdropPath: String? = null
 
-    class Image {
-        @SerializedName("url")
-        var url: String? = null
+    // Convenience full URLs for Glide
+    val posterImageUrl: String?
+        get() = posterPath?.let { IMAGE_BASE_URL + it }
+
+    val backdropImageUrl: String?
+        get() = backdropPath?.let { IMAGE_BASE_URL + it }
+
+    companion object {
+        private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500/"
     }
-
-    //TODO-STRETCH-GOALS
 }

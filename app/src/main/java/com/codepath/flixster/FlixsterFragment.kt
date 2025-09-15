@@ -16,114 +16,92 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
-import org.json.JSONArray
-
 
 // --------------------------------//
-// CHANGE THIS TO BE YOUR API KEY  //
+// COURSE API KEY (OK for this hw) //
 // --------------------------------//
 private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
 
-/*
- * The class for the only fragment in the app, which contains the progress bar,
- * recyclerView, and performs the network calls to the National Parks API.
-
- */
 class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
-        /*
-     * Constructing the view
+
+    private lateinit var progressBar: ContentLoadingProgressBar
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: flixsterRecyclerViewAdapter
+    private val movies = mutableListOf<Movie>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_flixster_list, container, false)
+
+        progressBar = view.findViewById(R.id.progress)
+        recyclerView = view.findViewById(R.id.list)
+
+        recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+        // Attach adapter immediately (silences "No adapter attached; skipping layout")
+        adapter = flixsterRecyclerViewAdapter(movies, this@FlixsterFragment)
+        recyclerView.adapter = adapter
+
+        updateAdapter()
+        return view
+    }
+
+    /**
+     * Fetch now_playing from TMDB and update RecyclerView.
      */
-        override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? {
-            val view = inflater.inflate(R.layout.fragment_flixster_list, container, false)
-            val progressBar = view.findViewById<View>(R.id.progress) as ContentLoadingProgressBar
-            val recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
-            val context = view.context
-
-            recyclerView.layoutManager = LinearLayoutManager(context)
-
-            updateAdapter(progressBar, recyclerView)
-            return view
-        }
-
-    /*
-     * Updates the RecyclerView adapter with new data.  This is where the
-     * networking magic happens!
-     */
-    private fun updateAdapter(progressBar: ContentLoadingProgressBar, recyclerView: RecyclerView) {
+    private fun updateAdapter() {
         progressBar.show()
 
-        // Create and set up an AsyncHTTPClient() here'
         val client = AsyncHttpClient()
-        val params = RequestParams()
-        params["api_key"] = API_KEY
+        val params = RequestParams().apply { this["api_key"] = API_KEY }
+        val url = "https://api.themoviedb.org/3/movie/now_playing"
 
-        // Using the client, perform the HTTP request
-        client[
-            "https://developer.nps.gov/api/v1/parks",
-            params,
-            object : JsonHttpResponseHandler()
-        // Uncomment me once you complete the above sections!
-        {
-            /*
-             * The onSuccess function gets called when
-             * HTTP response status is "200 OK"
-             */
-            override fun onSuccess(
-                statusCode: Int,
-                headers: Headers,
-                json: JsonHttpResponseHandler.JSON
-            ) {
-                // The wait for a response is over
-                progressBar.hide()
+        client[url, params, object : JsonHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
+                try {
+                    // TMDB payload: {..., "results": [ {movie}, ... ] }
+                    val results = json.jsonObject.getJSONArray("results")
 
-                val dataJSON = json.jsonObject.get("data") as JSONArray
-                val parksRawJSON = dataJSON.toString()
+                    val listType = object : TypeToken<List<Movie>>() {}.type
+                    val newMovies: List<Movie> =
+                        Gson().fromJson(results.toString(), listType)
 
-                // Create a Gson instance to help parse the raw JSON
-                val gson = Gson()
+                    // Update UI
+                    recyclerView.post {
+                        movies.clear()
+                        movies.addAll(newMovies)
+                        adapter.notifyDataSetChanged()
+                        progressBar.hide()
+                    }
 
-                // Tell Gson what type we’re expecting (a list of NationalPark objects)
-                val arrayParkType = object : TypeToken<List<Movie>>() {}.type
-
-                // Convert the raw JSON string into a list of actual NationalPark data models
-                val models: List<Movie> = gson.fromJson(parksRawJSON, arrayParkType)
-
-                recyclerView.adapter = flixsterRecyclerViewAdapter(models, this@FlixsterFragment)
-
-                // Look for this in Logcat:
-                Log.d("NationalParksFragment", "response successful")
+                    Log.d("FlixsterFragment", "Loaded ${newMovies.size} movies")
+                } catch (e: Exception) {
+                    Log.e("FlixsterFragment", "Parse error", e)
+                    recyclerView.post {
+                        progressBar.hide()
+                        Toast.makeText(requireContext(), "Failed to parse movies", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
-            /*
-             * The onFailure function gets called when
-             * HTTP response status is "4XX" (eg. 401, 403, 404)
-             */
             override fun onFailure(
                 statusCode: Int,
                 headers: Headers?,
-                errorResponse: String,
-                t: Throwable?
+                response: String?,
+                throwable: Throwable?
             ) {
-                // The wait for a response is over
-                progressBar.hide()
-
-                // If the error is not null, log it!
-                t?.message?.let {
-                    Log.e("NationalParksFragment", errorResponse)
+                Log.e("FlixsterFragment", "HTTP $statusCode: $response", throwable)
+                recyclerView.post {
+                    progressBar.hide()
+                    Toast.makeText(requireContext(), "Network error ($statusCode)", Toast.LENGTH_SHORT).show()
                 }
             }
         }]
-
     }
 
-    /*
-     * What happens when a particular park is clicked.
-     */
     override fun onItemClick(item: Movie) {
-        Toast.makeText(context, "Park Name: " + item.name, Toast.LENGTH_LONG).show()
+        TODO("Not yet implemented")
     }
-
 }
