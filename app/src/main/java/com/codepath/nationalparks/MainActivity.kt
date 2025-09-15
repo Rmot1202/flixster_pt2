@@ -1,4 +1,4 @@
-package com.codepath.nationalparks
+package com.codepath.flixster
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val supportFragmentManager = supportFragmentManager
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.content, NationalParksFragment(), null).commit()
+        fragmentTransaction.replace(R.id.content, FlixsterFragment(), null).commit()
 
     }
 }

@@ -8,7 +8,7 @@
 
     <!-- Park Image -->
     <ImageView
-        android:id="@+id/park_image"
+        android:id="@+id/ivPoster"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:scaleType="centerCrop"
@@ -20,39 +20,26 @@
 
     <!-- Park Name -->
     <TextView
-        android:id="@+id/park_name"
+        android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Park Name"
         android:textStyle="bold"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@id/park_image"
-        app:layout_constraintTop_toTopOf="@id/park_image"
+        app:layout_constraintStart_toEndOf="@id/ivPoster"
+        app:layout_constraintTop_toTopOf="@id/ivPoster"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="8dp" />
 
     <!-- Park Description -->
     <TextView
-        android:id="@+id/park_description"
+        android:id="@+id/tvOverview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Park Description goes here"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/park_name"
-        app:layout_constraintTop_toBottomOf="@id/park_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
-
-    <!-- Park Location -->
-    <TextView
-        android:id="@+id/park_location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Park Location"
-        android:textSize="12sp"
-        android:textColor="@android:color/darker_gray"
-        app:layout_constraintStart_toStartOf="@id/park_description"
-        app:layout_constraintTop_toBottomOf="@id/park_description"
+        app:layout_constraintStart_toStartOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp" />
 

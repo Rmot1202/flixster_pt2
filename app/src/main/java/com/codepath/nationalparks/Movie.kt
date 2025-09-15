@@ -1,4 +1,4 @@
-package com.codepath.nationalparks
+package com.codepath.flixster
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  * SerializedName tags MUST match the JSON response for the
  * object to correctly parse with the gson library.
  */
-class NationalPark {
+class Movie {
 
     // Name field
     @JvmField
@@ -20,12 +20,8 @@ class NationalPark {
     @SerializedName("description")
     var description: String? = null
 
-    // Location or State field
-    @JvmField
-    @SerializedName("states")
-    var location: String? = null
-
     //TODO parkImageUrl
+    @JvmField
     @SerializedName("images")
     var images: List<Image>? = null
 

@@ -1,4 +1,4 @@
-package com.codepath.nationalparks
+package com.codepath.flixster
 
 import android.os.Bundle
 import android.util.Log
@@ -22,14 +22,14 @@ import org.json.JSONArray
 // --------------------------------//
 // CHANGE THIS TO BE YOUR API KEY  //
 // --------------------------------//
-private const val API_KEY = "d6BG7ovXe5jnRb0HtELqatP2AAcOlRfaeLlNy9Ah"
+private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
 
 /*
  * The class for the only fragment in the app, which contains the progress bar,
  * recyclerView, and performs the network calls to the National Parks API.
 
  */
-class NationalParksFragment : Fragment(), OnListFragmentInteractionListener {
+class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
         /*
      * Constructing the view
      */
@@ -37,7 +37,7 @@ class NationalParksFragment : Fragment(), OnListFragmentInteractionListener {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View? {
-            val view = inflater.inflate(R.layout.fragment_national_parks_list, container, false)
+            val view = inflater.inflate(R.layout.fragment_flixster_list, container, false)
             val progressBar = view.findViewById<View>(R.id.progress) as ContentLoadingProgressBar
             val recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
             val context = view.context
@@ -86,12 +86,12 @@ class NationalParksFragment : Fragment(), OnListFragmentInteractionListener {
                 val gson = Gson()
 
                 // Tell Gson what type we’re expecting (a list of NationalPark objects)
-                val arrayParkType = object : TypeToken<List<NationalPark>>() {}.type
+                val arrayParkType = object : TypeToken<List<Movie>>() {}.type
 
                 // Convert the raw JSON string into a list of actual NationalPark data models
-                val models: List<NationalPark> = gson.fromJson(parksRawJSON, arrayParkType)
+                val models: List<Movie> = gson.fromJson(parksRawJSON, arrayParkType)
 
-                recyclerView.adapter = NationalParksRecyclerViewAdapter(models, this@NationalParksFragment)
+                recyclerView.adapter = flixsterRecyclerViewAdapter(models, this@FlixsterFragment)
 
                 // Look for this in Logcat:
                 Log.d("NationalParksFragment", "response successful")
@@ -122,7 +122,7 @@ class NationalParksFragment : Fragment(), OnListFragmentInteractionListener {
     /*
      * What happens when a particular park is clicked.
      */
-    override fun onItemClick(item: NationalPark) {
+    override fun onItemClick(item: Movie) {
         Toast.makeText(context, "Park Name: " + item.name, Toast.LENGTH_LONG).show()
     }
 
