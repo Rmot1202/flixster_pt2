@@ -1,4 +1,4 @@
-package com.codepath.nationalparks
+package com.codepath.flixster
 
 import org.junit.Test
 
