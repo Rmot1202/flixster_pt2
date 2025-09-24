@@ -7,63 +7,47 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.codepath.flixster.R.id
 
+class FlixsterRecyclerViewAdapter(
+    private var movies: List<Movie>,
+    private val listener: OnListFragmentInteractionListener?
+) : RecyclerView.Adapter<FlixsterRecyclerViewAdapter.MovieViewHolder>() {
 
-class flixsterRecyclerViewAdapter(
-    private val parks: List<Movie>,
-    private val mListener: OnListFragmentInteractionListener?
-) : RecyclerView.Adapter<flixsterRecyclerViewAdapter.ParkViewHolder>() {
-
-    // Inflate the item layout from XML
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParkViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_flixster, parent, false)
-        return ParkViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fragment_flixster, parent, false) // <-- compact item (poster+title+rating)
+        return MovieViewHolder(v)
     }
 
-    // ViewHolder class holds references to all UI elements inside the list item layout
-    inner class ParkViewHolder(val mView: View): RecyclerView.ViewHolder(mView) {
-        var mItem: Movie? = null
+    inner class MovieViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
+        val ivPoster: ImageView = v.findViewById(R.id.ivPoster)
+        val tvTitle: TextView = v.findViewById(R.id.tvTitle)
+        val tvRating: TextView = v.findViewById(R.id.tvRating)
+        var item: Movie? = null
 
-        // TODO: Step 4a - Add references for remaining views from XML
-
-
-        val mParkImage: ImageView = mView.findViewById(R.id.ivPoster)
-        val mParkName: TextView = mView.findViewById(id.tvTitle) as TextView
-        val mParkDescription: TextView = mView.findViewById(id.tvOverview) as TextView
-
-        override fun toString(): String {
-            return mParkName.toString() + " '" + mParkDescription.text + "'"
+        init {
+            v.setOnClickListener { item?.let { listener?.onItemClick(it) } }
         }
     }
 
-    override fun onBindViewHolder(holder: ParkViewHolder, position: Int) {
-        val park = parks[position]
+    override fun onBindViewHolder(h: MovieViewHolder, position: Int) {
+        val movie = movies[position]
+        h.item = movie
 
-        // TODO: Step 4b - Bind the park data to the views
-        holder.mParkName.text = park.title
-        holder.mParkDescription.text = park.overview
+        h.tvTitle.text = movie.title ?: "Untitled"
+        h.tvRating.text = "⭐ " + (movie.rating?.let { String.format("%.1f", it) } ?: "N/A")
 
-        // TODO: Step 4c - Use Glide to load the first image
-        val imageUrl = park.posterPath
-        val fullUrl = "https://image.tmdb.org/t/p/w500/$imageUrl"
-        Glide.with(holder.mView)
-            .load(fullUrl)
-            .centerInside()
-            .into(holder.mParkImage)
-
-
-        // Sets up click listener for this park item
-        holder.mView.setOnClickListener {
-            holder.mItem?.let { park ->
-                mListener?.onItemClick(park)
-            }
-        }
+        val url = movie.posterImageUrl ?: movie.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+        Glide.with(h.v)
+            .load(url)
+            .centerCrop()
+            .into(h.ivPoster)
     }
 
-    // Tells the RecyclerView how many items to display
-    override fun getItemCount(): Int {
-        return parks.size
+    override fun getItemCount() = movies.size
+
+    fun submitList(newList: List<Movie>) {
+        movies = newList
+        notifyDataSetChanged()
     }
 }

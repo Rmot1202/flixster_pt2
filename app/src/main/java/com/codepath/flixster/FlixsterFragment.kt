@@ -1,5 +1,6 @@
 package com.codepath.flixster
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,12 +11,14 @@ import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.RequestParams
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
+import kotlin.jvm.java
 
 // --------------------------------//
 // COURSE API KEY (OK for this hw) //
@@ -26,7 +29,7 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
 
     private lateinit var progressBar: ContentLoadingProgressBar
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: flixsterRecyclerViewAdapter
+    private lateinit var adapter: FlixsterRecyclerViewAdapter
     private val movies = mutableListOf<Movie>()
 
     override fun onCreateView(
@@ -38,9 +41,17 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
         progressBar = view.findViewById(R.id.progress)
         recyclerView = view.findViewById(R.id.list)
 
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
+        // Horizontal scroll (sideways in portrait)
+        recyclerView.layoutManager = LinearLayoutManager(
+            view.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        recyclerView.setHasFixedSize(true)
 
-        // Attach adapter immediately (silences "No adapter attached; skipping layout")
+        // Optional: snap one card per "page"
+        PagerSnapHelper().attachToRecyclerView(recyclerView)
+
         adapter = flixsterRecyclerViewAdapter(movies, this@FlixsterFragment)
         recyclerView.adapter = adapter
 
@@ -50,6 +61,7 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
 
     /**
      * Fetch now_playing from TMDB and update RecyclerView.
+     * (Swap the URL to tv/airing_today if you want TV instead of movies.)
      */
     private fun updateAdapter() {
         progressBar.show()
@@ -58,17 +70,15 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
         val params = RequestParams().apply { this["api_key"] = API_KEY }
         val url = "https://api.themoviedb.org/3/movie/now_playing"
 
-        client[url, params, object : JsonHttpResponseHandler() {
+        client.get(url, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
                 try {
                     // TMDB payload: {..., "results": [ {movie}, ... ] }
                     val results = json.jsonObject.getJSONArray("results")
 
                     val listType = object : TypeToken<List<Movie>>() {}.type
-                    val newMovies: List<Movie> =
-                        Gson().fromJson(results.toString(), listType)
+                    val newMovies: List<Movie> = Gson().fromJson(results.toString(), listType)
 
-                    // Update UI
                     recyclerView.post {
                         movies.clear()
                         movies.addAll(newMovies)
@@ -98,10 +108,23 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
                     Toast.makeText(requireContext(), "Network error ($statusCode)", Toast.LENGTH_SHORT).show()
                 }
             }
-        }]
+        })
     }
 
+    // Item click from adapter
     override fun onItemClick(item: Movie) {
-        TODO("Not yet implemented")
+        // If Movie is @Parcelize data class:
+        val intent = Intent(requireContext(), detail::class.java).apply {
+            putExtra("movie", item)
+        }
+        startActivity(intent)
+
+        // Fallback if not parcelable yet:
+        // val i = Intent(requireContext(), DetailActivity::class.java).apply {
+        //     putExtra("title", item.title)
+        //     putExtra("rating", item.rating ?: 0.0)
+        //     putExtra("posterUrl", item.posterImageUrl)
+        // }
+        // startActivity(i)
     }
 }
