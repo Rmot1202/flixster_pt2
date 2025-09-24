@@ -1,48 +1,31 @@
 package com.codepath.flixster
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /**
- * Model for a single movie from the TMDB API.
+ * Model for a single TV show (TMDB /tv/airing_today).
  */
-class AiringTodayDetail {
+class AiringTodayDetail : Serializable {
 
-    @JvmField
-    @SerializedName("name")
-    var title: String? = null
+    @SerializedName("name")           var title: String? = null
+    @SerializedName("vote_average")   var rating: Double? = null
+    @SerializedName("vote_count")     var voteCount: Int? = null
+    @SerializedName("poster_path")    var posterPath: String? = null
+    @SerializedName("overview")       var overview: String? = null
+    @SerializedName("first_air_date") var releaseDate: String? = null
+    @SerializedName("backdrop_path")  var backdropPath: String? = null
 
-    @JvmField
-    @SerializedName("vote_average")
-    var rating: Double? = null
-
-    @JvmField
-    @SerializedName("vote_count")
-    var votecount: Int? = null
-
-     @JvmField
-    @SerializedName("poster_path")
-    var posterPath: String? = null
-
-    @JvmField
-    @SerializedName("overview")
-    var overview: String? = null
-
-    @JvmField
-    @SerializedName("first_air_date")
-    var releaseDate: String? = null
-
-    @JvmField
-    @SerializedName("backdrop_path")
-    var backdropPath: String? = null
-
-    // Convenience full URLs for Glide
     val posterImageUrl: String?
-        get() = posterPath?.let { IMAGE_BASE_URL + it }
+        get() = posterPath?.let { IMAGE + it }
 
     val backdropImageUrl: String?
-        get() = backdropPath?.let { IMAGE_BASE_URL + it }
+        get() = backdropPath?.let { BACKDROP + it }
 
     companion object {
-        private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500/"
+        private const val IMAGE = "https://image.tmdb.org/t/p/w500"
+        private const val BACKDROP = "https://image.tmdb.org/t/p/w780"
+        // Optional: for Java serialization versioning
+        @JvmStatic private val serialVersionUID = 1L
     }
 }

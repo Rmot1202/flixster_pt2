@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 /**
  * Model for a single movie from the TMDB API.
  */
-class Movie {
+class Movie: java.io.Serializable{
 
     @JvmField
-    @SerializedName("nam")
+    @SerializedName("name")
     var title: String? = null
 
     @JvmField

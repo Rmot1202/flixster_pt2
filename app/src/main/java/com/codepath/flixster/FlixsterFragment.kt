@@ -10,27 +10,26 @@ import android.widget.Toast
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.RequestParams
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
-import kotlin.jvm.java
 
 // --------------------------------//
 // COURSE API KEY (OK for this hw) //
 // --------------------------------//
 private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
 
-class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
+class FlixsterFragment : Fragment() {
 
     private lateinit var progressBar: ContentLoadingProgressBar
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: FlixsterRecyclerViewAdapter
-    private val movies = mutableListOf<Movie>()
+    private lateinit var adapter: AiringTodayAdapter
+    private val items = mutableListOf<AiringTodayDetail>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,57 +40,56 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
         progressBar = view.findViewById(R.id.progress)
         recyclerView = view.findViewById(R.id.list)
 
-        // Horizontal scroll (sideways in portrait)
         recyclerView.layoutManager = LinearLayoutManager(
             view.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
         recyclerView.setHasFixedSize(true)
+        PagerSnapHelper().attachToRecyclerView(recyclerView) // optional
 
-        // Optional: snap one card per "page"
-        PagerSnapHelper().attachToRecyclerView(recyclerView)
-
-        adapter = flixsterRecyclerViewAdapter(movies, this@FlixsterFragment)
+        // Adapter takes a click lambda
+        adapter = AiringTodayAdapter(items) { item -> openDetail(item) }
         recyclerView.adapter = adapter
 
-        updateAdapter()
+        loadAiringToday()
         return view
     }
 
-    /**
-     * Fetch now_playing from TMDB and update RecyclerView.
-     * (Swap the URL to tv/airing_today if you want TV instead of movies.)
-     */
-    private fun updateAdapter() {
+    /** Fetch TV /airing_today and update RecyclerView. */
+    private fun loadAiringToday() {
         progressBar.show()
 
         val client = AsyncHttpClient()
-        val params = RequestParams().apply { this["api_key"] = API_KEY }
-        val url = "https://api.themoviedb.org/3/movie/now_playing"
+        val params = RequestParams().apply {
+            this["api_key"] = API_KEY
+            // optional:
+            // this["language"] = "en-US"
+            // this["page"] = "1"
+        }
+        val url = "https://api.themoviedb.org/3/tv/airing_today"
 
         client.get(url, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
                 try {
-                    // TMDB payload: {..., "results": [ {movie}, ... ] }
                     val results = json.jsonObject.getJSONArray("results")
-
-                    val listType = object : TypeToken<List<Movie>>() {}.type
-                    val newMovies: List<Movie> = Gson().fromJson(results.toString(), listType)
+                    val listType = object : TypeToken<List<AiringTodayDetail>>() {}.type
+                    val newItems: List<AiringTodayDetail> =
+                        Gson().fromJson(results.toString(), listType)
 
                     recyclerView.post {
-                        movies.clear()
-                        movies.addAll(newMovies)
+                        items.clear()
+                        items.addAll(newItems)
                         adapter.notifyDataSetChanged()
                         progressBar.hide()
                     }
 
-                    Log.d("FlixsterFragment", "Loaded ${newMovies.size} movies")
+                    Log.d("FlixsterFragment", "Loaded ${newItems.size} shows")
                 } catch (e: Exception) {
                     Log.e("FlixsterFragment", "Parse error", e)
                     recyclerView.post {
                         progressBar.hide()
-                        Toast.makeText(requireContext(), "Failed to parse movies", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed to parse shows", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -111,20 +109,10 @@ class FlixsterFragment : Fragment(), OnListFragmentInteractionListener {
         })
     }
 
-    // Item click from adapter
-    override fun onItemClick(item: Movie) {
-        // If Movie is @Parcelize data class:
-        val intent = Intent(requireContext(), detail::class.java).apply {
-            putExtra("movie", item)
+    private fun openDetail(item: AiringTodayDetail) {
+        val i = Intent(requireContext(), DetailActivity::class.java).apply {
+            putExtra(EXTRA_AIRING_TODAY, item) // AiringTodayDetail must be Serializable or Parcelable
         }
-        startActivity(intent)
-
-        // Fallback if not parcelable yet:
-        // val i = Intent(requireContext(), DetailActivity::class.java).apply {
-        //     putExtra("title", item.title)
-        //     putExtra("rating", item.rating ?: 0.0)
-        //     putExtra("posterUrl", item.posterImageUrl)
-        // }
-        // startActivity(i)
+        startActivity(i)
     }
 }
