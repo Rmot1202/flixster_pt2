@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AiringTodayAdapter(
     private var shows: List<AiringTodayDetail>,
@@ -15,7 +17,7 @@ class AiringTodayAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowVH {
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_flixster, parent, false) // <-- row item, not fragment
+            .inflate(R.layout.fragment_flixster, parent, false) // ✅ row item
         return ShowVH(v)
     }
 
@@ -34,12 +36,14 @@ class AiringTodayAdapter(
 
     override fun onBindViewHolder(h: ShowVH, position: Int) {
         val item = shows[position]
-        h.tvTitle.text = item.title ?: "Untitled" // AiringTodayDetail.name -> title (via @SerializedName)
+        h.tvTitle.text = item.title ?: "Untitled"
         h.tvRating.text = "⭐ " + (item.rating?.let { String.format("%.1f", it) } ?: "N/A")
+
+        val radius = h.itemView.resources.getDimensionPixelSize(R.dimen.poster_corner_radius)
 
         Glide.with(h.itemView)
             .load(item.posterImageUrl)
-            .centerCrop()
+            .transform(CenterCrop(), RoundedCorners(radius)) // 👈 rounded corners
             .into(h.ivPoster)
     }
 

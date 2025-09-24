@@ -7,7 +7,7 @@ import java.io.Serializable
  * Model for a single TV show (TMDB /tv/airing_today).
  */
 class AiringTodayDetail : Serializable {
-
+    @SerializedName("id") var id: Int? = null
     @SerializedName("name")           var title: String? = null
     @SerializedName("vote_average")   var rating: Double? = null
     @SerializedName("vote_count")     var voteCount: Int? = null

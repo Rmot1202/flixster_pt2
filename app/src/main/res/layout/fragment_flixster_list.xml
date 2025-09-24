@@ -1,24 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+    <!-- Scrollable page with two horizontal carousels -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".flixsterFragment"
-        tools:listitem="@layout/fragment_flixster" />
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Section 1 -->
+            <TextView
+                android:id="@+id/labelAiring"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Airing Today"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listAiring"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:overScrollMode="never" />
+
+            <!-- Section 2 -->
+            <TextView
+                android:id="@+id/labelTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Top Rated"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listTopRated"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:overScrollMode="never" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Loading spinner overlay -->
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminate="true"
-        android:theme="@style/Widget.AppCompat.ProgressBar" />
+        android:indeterminate="true" />
 </FrameLayout>

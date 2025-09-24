@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<!-- res/layout/item_media_compact.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemRoot"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
-    <!-- Park Image -->
     <ImageView
         android:id="@+id/ivPoster"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        app:layout_constraintDimensionRatio="2:3"
-        android:contentDescription="Movie poster"
-        tools:src="@drawable/ic_launcher_foreground" />
+        android:layout_width="140dp"
+        android:layout_height="210dp"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true" />
 
-    <!-- Park Name -->
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="0dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="Park Name"
+        android:layout_marginTop="6dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textStyle="bold"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@id/ivPoster"
-        app:layout_constraintTop_toTopOf="@id/ivPoster"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="8dp" />
+        android:textSize="14sp" />
 
-    <!-- Park Description -->
     <TextView
         android:id="@+id/tvRating"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="rating goes here"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/tvTitle"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginTop="4dp"
+        android:textSize="12sp" />
+</LinearLayout>
